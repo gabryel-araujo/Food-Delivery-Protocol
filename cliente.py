@@ -1,7 +1,10 @@
 import socket, sys
+from FilaEncadeada import Fila, FilaException
 
 HOST = '127.0.0.1'
 PORTA = 41800
+
+pedido = Fila()
 
 if len(sys.argv) > 1:
     HOST = sys.argv[1]
@@ -22,7 +25,10 @@ while True:
         print("3 - Calabresa")
         print("4 - Quatro queijos")
         print("5 - À moda da casa")
-        mensagem = input("Escolha uma opção: ")
+        temp = input("Escolha uma opção: ")
+        pedido.enfileira(temp)
+        print(pedido)
+        mensagem = pedido.str()
     except:
         print("\n"+"Você saiu!")
         break
