@@ -8,8 +8,8 @@ def processarCliente(con, cliente):
     while True:
         mensagem = con.recv(1024)
         msgDecodificada = mensagem.decode()
-        print("Mensagem do cliente",msgDecodificada)
         if not mensagem: break
+        print("Mensagem do cliente",msgDecodificada)
         con.send(mensagem)
     print("Desconectando do cliente", cliente)
     con.close()

@@ -1,10 +1,10 @@
 import socket, sys
-from FilaEncadeada import Fila, FilaException
+from listaEncadeada import Lista, ListaException
 
 HOST = '127.0.0.1'
 PORTA = 41800
 
-pedido = Fila()
+pedido = Lista()
 confirmacao = 1
 
 if len(sys.argv) > 1:
@@ -21,6 +21,7 @@ except ConnectionRefusedError as cre:
 
 while confirmacao != 0:
     try:
+        print(pedido.estaVazia())
         print("===Menu===")
         print("1 - Pepperoni")
         print("2 - Frango com catupiry")
@@ -30,28 +31,29 @@ while confirmacao != 0:
         temp = input("Escolha uma opção: ")
             
         if temp == "1":
-            pedido.enfileira("Pepperonni")
+            pedido.inserir(1, "Pepperonni")
         elif temp == "2":
-            pedido.enfileira("Frango com catupiry")
+            pedido.inserir(1, "Frango com catupiry")
         elif temp == "3":
-            pedido.enfileira("Calabresa")
+            pedido.inserir(1, "Calabresa")
         elif temp == "4":
-            pedido.enfileira("Quatro queijos")
+            pedido.inserir(1, "Quatro queijos")
         elif temp == "5":
-            pedido.enfileira("À moda da casa")
-
+            pedido.inserir(1, "À moda da casa")
+        print(pedido.estaVazia())
+        mensagem = pedido.__str__()
+        print("Carrinho: ", mensagem)
         print("\nPara continuar comprando digite: 1")
         print("Para fechar o pedido digite: 0")
         confirmacao = int(input('Opção: '))
+        
     except:
         print("\n"+"Você saiu!")
         break
     if confirmacao == 0:
-        mensagem = pedido.__str__()
         sock.send(str.encode(mensagem))
         mensagem = sock.recv(1024)
         mensagem = mensagem.decode()
-        print("Carrinho: ", mensagem)
     #if not mensagem:
         #break
 
