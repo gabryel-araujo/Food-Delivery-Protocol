@@ -8,18 +8,8 @@ def processarCliente(con, cliente):
     while True:
         mensagem = con.recv(1024)
         msgDecodificada = mensagem.decode()
+        print("Mensagem do cliente",msgDecodificada)
         if not mensagem: break
-        if msgDecodificada == "1":
-            print(cliente, "Pedido selecionado: Pepperoni")
-        if msgDecodificada == "2":
-            print(cliente, "Pedido selecionado: Frango com catupiry")
-        if msgDecodificada == "3":
-            print(cliente, "Pedido selecionado: Calabresa")
-        if msgDecodificada == "4":
-            print(cliente, "Pedido selecionado: Quatro queijos")
-        if msgDecodificada == "5":
-            print(cliente, "Pedido selecionado: À moda da casa")
-
         con.send(mensagem)
     print("Desconectando do cliente", cliente)
     con.close()

@@ -96,7 +96,7 @@ class Fila:
 
 
     def __str__(self)->str:
-        s = 'Pedido: [ '
+        s = '[ '
         cursor = self.__head.frente
         while(cursor != None):
             s += f'{cursor.carga}, ' 
