@@ -7,8 +7,19 @@ def processarCliente(con, cliente):
     print("Conectado com: ", cliente)
     while True:
         mensagem = con.recv(1024)
+        msgDecodificada = mensagem.decode()
         if not mensagem: break
-        print(cliente, "mensagem: ", mensagem.decode())
+        if msgDecodificada == "1":
+            print(cliente, "Pedido selecionado: Pepperoni")
+        if msgDecodificada == "2":
+            print(cliente, "Pedido selecionado: Frango com catupiry")
+        if msgDecodificada == "3":
+            print(cliente, "Pedido selecionado: Calabresa")
+        if msgDecodificada == "4":
+            print(cliente, "Pedido selecionado: Quatro queijos")
+        if msgDecodificada == "5":
+            print(cliente, "Pedido selecionado: À moda da casa")
+
         con.send(mensagem)
     print("Desconectando do cliente", cliente)
     con.close()
@@ -30,3 +41,7 @@ while True:
         sys.exit(0)
     con.close()
 sock.close()
+
+
+#área para adicionar novas ideias e coisas para fazer
+# 1)criação de um chat para falar com a empresa sobre o pedido
