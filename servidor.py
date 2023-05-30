@@ -19,7 +19,7 @@ def processarCliente(con, cliente):
         con.send(mensagem)
 
     print("Desconectando do cliente", cliente)
-    #mensagem do servidor: agradecemos a preferência
+    #mensagem do servidor: agradecemos a preferência teste
     con.close()
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
