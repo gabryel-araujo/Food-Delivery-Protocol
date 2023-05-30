@@ -1,5 +1,6 @@
 import socket, sys
 from listaEncadeada import Lista, ListaException
+from menu import showMenu, cardapio
 
 HOST = '127.0.0.1'
 PORTA = 41800
@@ -21,32 +22,18 @@ except ConnectionRefusedError as cre:
 
 while confirmacao != 0:
     try:
-        print(pedido.estaVazia())
-        print("===Menu===")
-        print("1 - Pepperoni")
-        print("2 - Frango com catupiry")
-        print("3 - Calabresa")
-        print("4 - Quatro queijos")
-        print("5 - À moda da casa")
+        showMenu()
         temp = input("Escolha uma opção: ")
             
         if temp == "1":
-            pedido.inserir(1, "Pepperonni")
+            cardapio()
+            
         elif temp == "2":
-            pedido.inserir(1, "Frango com catupiry")
+            print("Carrinho: ", mensagem)
         elif temp == "3":
-            pedido.inserir(1, "Calabresa")
-        elif temp == "4":
-            pedido.inserir(1, "Quatro queijos")
-        elif temp == "5":
-            pedido.inserir(1, "À moda da casa")
-        print(pedido.estaVazia())
-        mensagem = pedido.__str__()
-        print("Carrinho: ", mensagem)
-        print("\nPara continuar comprando digite: 1")
-        print("Para fechar o pedido digite: 0")
-        confirmacao = int(input('Opção: '))
+            pass
         
+        confirmacao = int(input('Opção: '))
     except:
         print("\n"+"Você saiu!")
         break
