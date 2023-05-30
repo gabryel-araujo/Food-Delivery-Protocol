@@ -1,12 +1,13 @@
 import socket, sys
 from listaEncadeada import Lista, ListaException
-from menu import showMenu, cardapio
+from menu import showMenu, Escolha_Cardapio, carrinho_pedidos
 
 HOST = '127.0.0.1'
 PORTA = 41800
 
-pedido = Lista()
-confirmacao = 1
+carrinho = Lista()
+confirmacao = ''
+mensagem = ''
 
 if len(sys.argv) > 1:
     HOST = sys.argv[1]
@@ -20,27 +21,38 @@ except ConnectionRefusedError as cre:
     print("A pizzaria se encontra fechada")
     sys.exit()
 
-while confirmacao != 0:
+while True:
     try:
-        showMenu()
-        temp = input("Escolha uma opção: ")
+        menu = showMenu()
+           
+        if menu == "1":
+            while confirmacao != 'n':
+                mensagem = Escolha_Cardapio(carrinho)
+                print("\nCarrinho: ", mensagem)
+                print("\nDeseja continuar comprando? (S/N)")
+                confirmacao = input('Opção: ').lower()
             
-        if temp == "1":
-            cardapio()
+                    
+        elif menu == "2":
+            escolha = carrinho_pedidos(carrinho)
             
-        elif temp == "2":
-            print("Carrinho: ", mensagem)
-        elif temp == "3":
-            pass
-        
-        confirmacao = int(input('Opção: '))
+
+        elif menu == "3":
+            sock.send(str.encode(mensagem))
+            mensagem = sock.recv(1024)
+            mensagem = mensagem.decode()
+            print('\nSeu pedido foi enviado com sucesso!')
+            input('\nAperte ENTER para voltar ao MENU...')
+
+        elif menu == 'x':
+            print("\nAgradecemos por sua preferência. Volte sempre!")
+            break
+
+        # confirmacao = int(input('Opção: '))
     except:
         print("\n"+"Você saiu!")
-        break
-    if confirmacao == 0:
-        sock.send(str.encode(mensagem))
-        mensagem = sock.recv(1024)
-        mensagem = mensagem.decode()
+        break  
+    
     #if not mensagem:
         #break
 
