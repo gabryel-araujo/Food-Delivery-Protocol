@@ -1,7 +1,10 @@
 import socket, os, sys
+from FilaEncadeada import Fila, FilaException
 
 HOST = '127.0.0.1'
 PORTA = 41800
+
+pedidos = Fila()
 
 def processarCliente(con, cliente):
     print("Conectado com: ", cliente)
@@ -9,19 +12,14 @@ def processarCliente(con, cliente):
         mensagem = con.recv(1024)
         msgDecodificada = mensagem.decode()
         if not mensagem: break
-        if msgDecodificada == "1":
-            print(cliente, "Pedido selecionado: Pepperoni")
-        if msgDecodificada == "2":
-            print(cliente, "Pedido selecionado: Frango com catupiry")
-        if msgDecodificada == "3":
-            print(cliente, "Pedido selecionado: Calabresa")
-        if msgDecodificada == "4":
-            print(cliente, "Pedido selecionado: Quatro queijos")
-        if msgDecodificada == "5":
-            print(cliente, "Pedido selecionado: À moda da casa")
-
+        pedidos.enfileira(msgDecodificada)
+        print("Pedido do cliente",msgDecodificada)
+        print("="*50)
+        print(f"Pedidos em espera: {pedidos} Total: {len(pedidos)}")
         con.send(mensagem)
+
     print("Desconectando do cliente", cliente)
+    #mensagem do servidor: agradecemos a preferência teste
     con.close()
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

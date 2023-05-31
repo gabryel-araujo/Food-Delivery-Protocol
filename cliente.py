@@ -25,18 +25,18 @@ while True:
     try:
         menu = showMenu()
         confirmacao = ""
-
+           
         if menu == "1":
             while confirmacao != 'n':
                 mensagem = Escolha_Cardapio(carrinho)
                 print("\nCarrinho: ", mensagem)
                 print("\nDeseja continuar comprando? (S/N)")
                 confirmacao = input('Opção: ').lower()
-
-
+            
+                    
         elif menu == "2":
             escolha = carrinho_pedidos(carrinho)
-
+            
 
         elif menu == "3":
             sock.send(str.encode(mensagem))
@@ -52,8 +52,8 @@ while True:
         # confirmacao = int(input('Opção: '))
     except:
         print("\n"+"Você saiu!")
-        break
-
+        break  
+    
     #if not mensagem:
         #break
 
