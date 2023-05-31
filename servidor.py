@@ -1,5 +1,6 @@
 import socket, os, sys
 from FilaEncadeada import Fila, FilaException
+import threading
 
 HOST = '127.0.0.1'
 PORTA = 41800
@@ -32,12 +33,14 @@ while True:
     except KeyboardInterrupt as ke:
         print("\n" + "Servidor encerrado!", ke)
         break
-    pid = os.fork()
-    if pid == 0:
-        sock.close()
-        processarCliente(con,cliente)
-        sys.exit(0)
-    con.close()
+    t = threading.Thread(target=processarCliente, args=(con, cliente,))
+    t.start()
+    # pid = os.fork()
+    # if pid == 0:
+    #     sock.close()
+    #     processarCliente(con,cliente)
+    #     sys.exit(0)
+con.close()
 sock.close()
 
 

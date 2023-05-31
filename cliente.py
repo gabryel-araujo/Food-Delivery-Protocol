@@ -49,7 +49,6 @@ while True:
             print("\nAgradecemos por sua preferência. Volte sempre!")
             break
 
-        # confirmacao = int(input('Opção: '))
     except:
         print("\n"+"Você saiu!")
         break  
