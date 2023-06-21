@@ -2,6 +2,7 @@ class FilaException(Exception):
     def __init__(self,msg):
         super().__init__(msg)
 
+
 class No:
     def __init__(self, carga:any):
         self.__carga = carga
@@ -96,7 +97,7 @@ class Fila:
 
 
     def __str__(self)->str:
-        s = 'Pedido: [ '
+        s = 'Prioridade->[ '
         cursor = self.__head.frente
         while(cursor != None):
             s += f'{cursor.carga}, ' 

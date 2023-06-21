@@ -1,9 +1,9 @@
 import os
-# from listaEncadeada import Lista, ListaException
+from listaEncadeada import Lista, ValorInexistenteException
 
 def showMenu():
     escolha = ''
-    os.system('clear')
+    os.system('cls')
     print("===Menu===")
     print("1 - Mostrar cardápio")
     print("2 - Abrir carrinho")
@@ -15,7 +15,7 @@ def showMenu():
 
 def Escolha_Cardapio(lista):
     escolha = ''
-    os.system('clear')
+    os.system('cls')
     print("===Cardápio===")
     print("1 - Pepperoni")
     print("2 - Frango com catupiry")
@@ -36,19 +36,21 @@ def Escolha_Cardapio(lista):
     return lista.__str__()
 
 def carrinho_pedidos(lista):
+    os.system('cls')
     print("===Carrinho===\n")
     print(lista)
     print("\n1 - Remover item")
     print("2 - Adicionar item")
     
-    escolha = input("Escolha uma opção: ").lower()
+    escolha = input ("Escolha uma opção: ").lower()
     if escolha == '1':
-        print('Digite a posição')
-
-    
-     
-
-
-    
-
+        item = input('Insira o sabor: ')
+        if lista.busca(item) :
+            lista.remover(lista.busca(item))
+            print (lista)
+            carrinho_pedidos(lista)
+    elif escolha == '2':
+        return
+        # except:
+        #     raise ValorInexistenteException (f'0 sabor {item} não está no seu carrinho')
 # TEMP MENU, TEMP CARDAPIO, TEMP CARRINHO
