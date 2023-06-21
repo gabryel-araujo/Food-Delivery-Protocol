@@ -35,7 +35,7 @@ while True:
             
                     
         elif menu == "2":
-            escolha = carrinho_pedidos(carrinho)
+            carrinho_pedidos(carrinho)
             
 
         elif menu == "3":
