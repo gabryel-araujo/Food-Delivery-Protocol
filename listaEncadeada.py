@@ -290,6 +290,9 @@ class Lista:
         s = s[:-2] + " ]"
         return s
        
+    def esvaziar(self):#Método Adicionado
+        while not (self.estaVazia()):
+            self.remover(self.__size)
 
 if __name__ == '__main__':
     lst = Lista()

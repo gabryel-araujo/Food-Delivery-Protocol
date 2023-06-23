@@ -1,0 +1,10 @@
+cardapio = { "1":["À moda da casa", 38.00],
+    "2":["Calabresa", 38.00],
+    "3":["Frango com catupiry", 38.00],
+    "4":["Pepperoni", 38.00],
+    "5":["Quatro queijos", 38.00],
+    "6":["Porção batata P", 12.00],
+    "7":["Porção batata G", 20.00],
+    "8":["Refrigerante 1L", 6.00],
+    "9":["Refrigerante 2L", 10.00],
+    }
