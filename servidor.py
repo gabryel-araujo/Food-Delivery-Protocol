@@ -1,6 +1,8 @@
 import socket, os, sys
 from FilaEncadeada import Fila, FilaException
 import threading
+from cardapio import*
+from menu import*
 
 HOST = '127.0.0.1'
 PORTA = 41800
@@ -12,12 +14,21 @@ def processarCliente(con, cliente):
     while True:
         mensagem = con.recv(1024)
         msgDecodificada = mensagem.decode()
-        if not mensagem: break
+        # if msgDecodificada == 'send':
         pedidos.enfileira(msgDecodificada)
         print("Pedido do cliente",msgDecodificada)
         print("="*50)
         print(f"Pedidos em espera: {pedidos} Total: {len(pedidos)}")
-        con.send(mensagem)
+        con.send(str.encode(f'\nRecebemos seu pedido com sucesso!\nPedido:{mensagem}'))
+        if msgDecodificada == 'menu':
+            cardapio_view = "===CARDÁPIO===\n"
+            for item in cardapio:     
+               cardapio_view += f'{item} - {cardapio[item][0]}: R$ {cardapio[item][1]:.2f}'
+            con.send(str.encode(cardapio_view))
+        if msgDecodificada == 'quit':
+            con.send(str.encode('\nXau xau! Volte sempre que estiver com fome!'))
+
+        if not mensagem: break
 
     print("Desconectando do cliente", cliente)
     #mensagem do servidor: agradecemos a preferência teste

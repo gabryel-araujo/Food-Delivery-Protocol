@@ -1,5 +1,5 @@
 import os
-from listaEncadeada import Lista, ValorInexistenteException
+from Lista_Encadeada import*
 from cardapio import cardapio
 
 carrinho = Lista()
@@ -24,9 +24,9 @@ def Escolha_Cardapio(lista):
         limpaTerminal()
         escolha = ''
         global total
-        print("===CARDÁPIO===\n")
-        for item in cardapio:
-            print(f'{item} - {cardapio[item][0]}: R$ {cardapio[item][1]:.2f}')
+        # print("===CARDÁPIO===\n")
+        # for item in cardapio:
+        #     print(f'{item} - {cardapio[item][0]}: R$ {cardapio[item][1]:.2f}')
         escolha = input("\nEscolha uma opção: ").lower()
         if escolha in cardapio.keys():
             lista.inserir(1, cardapio[escolha][0])
@@ -46,13 +46,21 @@ def pagamento(lista):
     nome = input("Nome: ")
     telefone = input("Telefone: ")
     print("\nForma de pagamento:")
-    pagamento = input("1 - Cartão (pagamento na entrega) 2 - Dinheiro")
+    print("1 - Cartão (pagamento na entrega)\n2 - Dinheiro")
+    pagamento = input("Opção: ")
     lista.inserir(1, nome)
     lista.inserir(2, telefone)
     if pagamento == '2':
-        print("Informe o valor em cédulas a ser pago para providenciarmos o troco: ")
-        valor = input("")
-        print(f'Seu troco será de R$ {valor-total:.2f}')
+        lista.inserir(3,'Dinheiro')
+        print("Vai ser necessário troco?(S/N)")
+        troco = input().lower()
+        if troco == 's':
+            valor = float(input("Informar o valor do troco: "))   
+            lista.inserir(4, valor)
+        else:
+            lista.inserir(4,'No')
+    else:
+        lista.inserir(3,'Cartão')         
     return lista.__str__()
 
 def carrinho_pedidos(lista):

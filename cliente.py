@@ -1,13 +1,12 @@
 import socket, sys
-from listaEncadeada import Lista, ListaException
-from menu import *
+from Lista_Encadeada import*
+from menu import*
 
 
 HOST = '127.0.0.1'
 PORTA = 41800
 mensagem = 0
-
-
+options = ['menu', 'send', 'quit']
 
 if len(sys.argv) > 1:
     HOST = sys.argv[1]
@@ -26,7 +25,16 @@ while True:
     # try:
         menu = showMenu()
         if menu == "1":
+                req = options[0]
+                sock.send(str.encode(req))
+                req = sock.recv(1024)
+                print(req)
+
             # while confirmacao != 'n':
+                # req = options[0]
+                # sock.send(str.encode(req))
+                # req = sock.recv(1024)
+                # req = req.decode()
                 mensagem = Escolha_Cardapio(carrinho)
                 # print("\nCarrinho: ", mensagem)
                 # print(f'Total: {total:.2f}')
@@ -39,15 +47,19 @@ while True:
             
 
         elif menu == "3":
-            if mensagem != 0:
-                mensagem = contato(carrinho)
+            if len(mensagem) != 0:
+                req = options[1]
+                mensagem = pagamento(carrinho)
                 sock.send(str.encode(mensagem))
                 mensagem = sock.recv(1024)
                 mensagem = mensagem.decode()
-                print('\nSeu pedido foi enviado com sucesso!')
-                input('\nPressione ENTER para voltar ao MENU...')
+                print 
+
+                # print('\nSeu pedido foi enviado com sucesso!')
+                # input('\nPressione ENTER para voltar ao MENU...')
                 mensagem = 0
                 total = 0
+                carrinho.esvaziar()
             else:
                 limpaTerminal()
                 print("\nSeu carrinho está vazio! Adicione algo para fazer seu pedido!")   
@@ -55,7 +67,14 @@ while True:
                 Escolha_Cardapio(carrinho) 
 
         elif menu == 'x':
-            print("\nAgradecemos por sua preferência. Volte sempre!")
+            req = options[2]
+            sock.send(str.encode(req))
+            req = sock.recv(1024)
+            print(req)
+            
+            
+            
+            # print("\nAgradecemos por sua preferência. Volte sempre!")
             break
 
     # except:
