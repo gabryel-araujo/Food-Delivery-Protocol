@@ -28,7 +28,8 @@ while True:
                 req = options[0]
                 sock.send(str.encode(req))
                 req = sock.recv(1024)
-                print(req)
+                limpaTerminal()
+                print(req.decode())
 
             # while confirmacao != 'n':
                 # req = options[0]
@@ -44,7 +45,6 @@ while True:
                     
         elif menu == "2":
             carrinho_pedidos(carrinho)
-            
 
         elif menu == "3":
             if len(mensagem) != 0:
