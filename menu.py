@@ -1,6 +1,7 @@
 import os
 from Lista_Encadeada import*
 from cardapio import*
+import Cliente
 
 carrinho = Lista()
 total = 0
@@ -45,26 +46,29 @@ def Escolha_Cardapio(lista):
 def pagamento(lista):
     global total
     limpaTerminal()
+    cliente = Cliente()
     print("Para finalizar, preencha os campos abaixo:")
-    nome = input("Nome: ")
-    telefone = input("Telefone: ")
+    cliente.setNome(input("Nome: "))
+    cliente.setTelefone(input("Telefone: "))
     print("\nForma de pagamento:")
     print("1 - Cartão (pagamento na entrega)\n2 - Dinheiro")
-    pagamento = input("Opção: ")
-    lista.inserir(1, nome)
-    lista.inserir(2, telefone)
+    cliente.setPagamento(input("Opção: "))
+    # lista.inserir(1, nome)
+    # lista.inserir(2, telefone)
     if pagamento == '2':
-        lista.inserir(3,'Dinheiro')
+        # lista.inserir(3,'Dinheiro')
         print("Vai ser necessário troco?(S/N)")
         troco = input().lower()
         if troco == 's':
             valor = float(input("Informar o valor do troco: "))   
-            lista.inserir(4, valor)
+            # lista.inserir(4, valor)
+            cliente.setTroco(valor)
         else:
             lista.inserir(4,'Sem troco')
-    else:
-        lista.inserir(3,'Cartão')         
-    return lista.__str__()
+    # else:
+        # lista.inserir(3,'Cartão')         
+    # return lista.__str__()
+    return cliente.__str__()
 
 def carrinho_pedidos(lista):
     limpaTerminal()
@@ -104,3 +108,26 @@ def carrinho_pedidos(lista):
 def limpaTerminal():
     os.system('cls')
     os.system('clear')
+
+#Criei aqui um protótipo de menu para o servidor para se comportar parecido com o do cliente
+
+def menuServidor():
+    escolha = ''
+    print("===Área da Pizzaria===")
+    print('1 - Abrir pizzaria')
+    print("2 - Exibir pedidos")
+    print("3 - Abrir chat")
+    print("4 - Editar cardápio")
+    escolha = input('Selecione uma opção: ')
+
+    if escolha == '1':
+        return '1'
+    
+    if escolha == '2':
+        return '2'
+
+    if escolha == '3':
+        return '3'
+    
+    if escolha == '4':
+        return '4'
