@@ -8,9 +8,29 @@ HOST = '127.0.0.1'
 PORTA = 41800
 
 pedidos = Fila()
+clientList = []
+
+escolha = menuServidor()
+
+if escolha == '1':
+    pass
+elif escolha == '2':
+    pass
+elif escolha == '3':
+    pass
+elif escolha == '4':
+    print("===Cardápio===\n")
+    for item in cardapio:
+        print(f'{item} - {cardapio[item][0]}: R$ {cardapio[item][1]:.2f}')
+    print("\n1 - Remover item do cardápio")
+    print("2 - Adicionar item do cardápio")
+    print("3 - Voltar")
+    opcao = input('Escolha uma opção: ')
+
+
 
 def processarCliente(con, cliente):
-    print("Conectado com: ", cliente)
+    clientList.append(cliente)
     while True:
         mensagem = con.recv(1024)
         msgDecodificada = mensagem.decode()
@@ -54,7 +74,6 @@ while True:
     #     sys.exit(0)
 con.close()
 sock.close()
-
 
 #área para adicionar novas ideias e coisas para fazer
 # 1)criação de um chat para falar com a empresa sobre o pedido
