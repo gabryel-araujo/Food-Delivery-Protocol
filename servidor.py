@@ -1,8 +1,10 @@
-import socket, os, sys
+import socket
+import os
+import sys
 from FilaEncadeada import Fila, FilaException
 import threading
-from cardapio import*
-from menu import*
+from cardapio import *
+from menu import *
 
 HOST = '127.0.0.1'
 PORTA = 41800
@@ -30,6 +32,7 @@ elif escolha == '4':
     print("3 - Voltar")
     opcao = input('Escolha uma opção: ')
 
+
 def processarCliente(con, cliente):
     clientList.append(cliente)
     global total
@@ -45,17 +48,20 @@ def processarCliente(con, cliente):
                 con.send(str.encode(cardapio_view))
             if msgDecodificada[1] == 'CHOOSE':
                 if msgDecodificada[2] in cardapio.keys():
-                    total = cardapio[msgDecodificada[2]][1] #Total é incrementado com o valor do pedido que consta no cardápio.
-                    pedido = f'{cmd_server[1]}/{cardapio[msgDecodificada[2]][0]}/{total}' #Forma uma string com o pedido e valor total atual.
-                    con.send(str.encode(pedido)) #Envia a string ao cliente.
+                    # Total é incrementado com o valor do pedido que consta no cardápio.
+                    total = cardapio[msgDecodificada[2]][1]
+                    # Forma uma string com o pedido e valor total atual.
+                    pedido = f'{cmd_server[1]}/{cardapio[msgDecodificada[2]][0]}/{total}'
+                    con.send(str.encode(pedido))  # Envia a string ao cliente.
         elif msgDecodificada[0] == "SEND":
             pedidos.enfileira(msgDecodificada[1])
             dados_cliente.enfileira(msgDecodificada[2])
-            print("Pedido do cliente",msgDecodificada[1])
-            print("Dados: ",msgDecodificada[2])
+            print("Pedido do cliente", msgDecodificada[1])
+            print("Dados: ", msgDecodificada[2])
             print("="*50)
             print(f"Pedidos em espera: {pedidos} Total: {len(pedidos)}")
-            con.send(str.encode(f'\nRecebemos seu pedido com sucesso!\nPedido:{msgDecodificada[1]}'))
+            con.send(str.encode(
+                f'\nRecebemos seu pedido com sucesso!\nPedido:{msgDecodificada[1]}'))
         elif msgDecodificada[0] == "REMOVE":
             for item in cardapio.values():
                 if item[0] == msgDecodificada[1]:
@@ -64,11 +70,13 @@ def processarCliente(con, cliente):
         elif msgDecodificada == 'quit':
             con.send(str.encode('\nXau xau! Volte sempre que estiver com fome!'))
 
-        if not mensagem: break
+        if not mensagem:
+            break
 
     print("Desconectando do cliente", cliente)
-    #mensagem do servidor: agradecemos a preferência teste
+    # mensagem do servidor: agradecemos a preferência teste
     con.close()
+
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 servidor = (HOST, PORTA)
@@ -90,5 +98,5 @@ while True:
 con.close()
 sock.close()
 
-#área para adicionar novas ideias e coisas para fazer
+# área para adicionar novas ideias e coisas para fazer
 # 1)criação de um chat para falar com a empresa sobre o pedido
