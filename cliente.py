@@ -3,7 +3,7 @@ import os
 import platform
 from Lista_Encadeada import*
 from menu import*
-import Cliente_
+from Cliente_Class import Cliente
 
 
 carrinho = Lista()
@@ -52,9 +52,9 @@ def Escolhe_pedido(lista): #Função responsável por solicitar o cardápio ao s
             print("\nDeseja continuar comprando? (S/N)")
             confirmacao = input('Opção: ').lower()    
             if confirmacao == 'n':
-                return lista.__str__()
+                return f'{lista}'
             else:
-                carrinho_pedidos(lista)
+                Escolhe_pedido(lista)
 
 def carrinho_pedidos(lista):
     limpaTerminal()
@@ -96,23 +96,24 @@ def carrinho_pedidos(lista):
         #     raise ValorInexistenteException (f'0 sabor {item} não está no seu carrinho')
 # TEMP MENU, TEMP CARDAPIO, TEMP CARRINHO
         
-def Dados_pagamento(): #Função responsável por receber os dados do cliente e retornar uma string desses dados.
+def dados_pagamento(): #Função responsável por receber os dados do cliente e retornar uma string desses dados.
     limpaTerminal()
     global total
-    cliente = Cliente_()
+    cliente = Cliente()
     print("Para finalizar, preencha os campos abaixo:")
     cliente.setNome(input("Nome: "))
     cliente.setTelefone(input("Telefone: "))
+    cliente.setCep(input("Cep: "))
     print("\nForma de pagamento:")
     print("1 - Cartão (pagamento na entrega)\n2 - Dinheiro")
     cliente.setPagamento(input("Opção: "))
-    if cliente.__pagamento == '2':
+    if cliente.getPagamento() == 'Dinheiro':
         print("Vai ser necessário troco?(S/N)")
         troco = input().lower()
         if troco == 's':
             valor = float(input("Informar o valor do troco: "))   
             cliente.setTroco(valor) 
-    return cliente.__str__()
+    return f'{cliente}'
 
 def limpaTerminal():   
     if platform.system() == 'Windows':
@@ -140,14 +141,14 @@ while True:
     # try:
         menu = showMenu()
         if menu == "1":
-            mensagem = Escolhe_pedido(carrinho)  
+            mensagem = Escolhe_pedido(carrinho) 
                     
         elif menu == "2":
             carrinho_pedidos(carrinho)
 
         elif menu == "3":
             if len(mensagem) != 0:
-                dados = Dados_pagamento()
+                dados = dados_pagamento()
                 req = f'{cmd_client[1]}/{mensagem}/{dados}' #Adiciona o método SEND, a lista com o pedido e os dados do cliente na variável que será enviada ao servidor.
                 sock.send(str.encode(req))
                 input('\nPressione ENTER para voltar ao MENU...')
@@ -165,10 +166,7 @@ while True:
             req = cmd_client[2]
             sock.send(str.encode(req))
             req = sock.recv(1024)
-            print(req)
-            
-            
-            
+            print(req.decode())
             # print("\nAgradecemos por sua preferência. Volte sempre!")
             break
 

@@ -30,8 +30,6 @@ elif escolha == '4':
     print("3 - Voltar")
     opcao = input('Escolha uma opção: ')
 
-
-
 def processarCliente(con, cliente):
     clientList.append(cliente)
     global total
@@ -42,7 +40,7 @@ def processarCliente(con, cliente):
         if msgDecodificada[0] == 'MENU':
             if msgDecodificada[1] == 'SHOW':
                 cardapio_view = f'{cmd_server[0]}/===CARDÁPIO===\n'
-                for item in cardapio:     
+                for item in cardapio:
                     cardapio_view += f'{item} - {cardapio[item][0]}: R$ {cardapio[item][1]:.2f}\n'
                 con.send(str.encode(cardapio_view))
             if msgDecodificada[1] == 'CHOOSE':
@@ -57,16 +55,12 @@ def processarCliente(con, cliente):
             print("Dados: ",msgDecodificada[2])
             print("="*50)
             print(f"Pedidos em espera: {pedidos} Total: {len(pedidos)}")
-            con.send(str.encode(f'\nRecebemos seu pedido com sucesso!\nPedido:{msgDecodificada[1]}'))        
+            con.send(str.encode(f'\nRecebemos seu pedido com sucesso!\nPedido:{msgDecodificada[1]}'))
         elif msgDecodificada[0] == "REMOVE":
             for item in cardapio.values():
                 if item[0] == msgDecodificada[1]:
                     total = f'{cmd_server[2]}/{item[1]}'
             con.send(str.encode(total))
-
-
-        
-        
         elif msgDecodificada == 'quit':
             con.send(str.encode('\nXau xau! Volte sempre que estiver com fome!'))
 
