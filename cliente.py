@@ -1,13 +1,12 @@
 import socket, sys
 import os
 import platform
-from Lista_Encadeada import*
-from menu import*
-import Cliente_
-
+from Lista_Encadeada import *
+from menu import *
+from Cliente_Class import Cliente
 
 carrinho = Lista()
-HOST = '127.0.0.1'
+HOST = '0.0.0.0'
 PORTA = 41800
 mensagem = 0
 cmd_client = ['MENU', 'SEND', 'REMOVE','QUIT'] #MÉTODOS DO PROTOCOLO.  
@@ -15,6 +14,7 @@ cmd_MENU = ['SHOW', 'CHOOSE'] #Dentro do método MENU temos o SHOW e CHOOSE.
 req = ''
 resp = ''
 v_total = 0
+cardapio = ""
 
 def showMenu():
     limpaTerminal()
@@ -28,33 +28,46 @@ def showMenu():
     return escolha
 
 
-def Escolhe_pedido(lista): #Função responsável por solicitar o cardápio ao servidor, escolher as opções e adicionar ao carrinho (lista).
+def Escolhe_pedido(lista):
+    global v_total
     while True:
         global v_total
         limpaTerminal()
-        req = f'{cmd_client[0]}/{cmd_MENU[0]}' #Adicionando o SHOW na requisição. 
+        # Adicionando o SHOW na requisição.
+        req = f'{cmd_client[0]}/{cmd_MENU[0]}'
         sock.send(str.encode(req))
         resp = sock.recv(1024)
         resp = resp.decode()
-        resp = resp.split('/') #Dividindo o método do protocolo do conteúdo da mensagem.              
+        # Dividindo o método do protocolo do conteúdo da mensagem.
+        resp = resp.split('/')
         print(resp[1])
 
-        if resp[0] == 'SENT_MENU':    
-            escolha = input("\nEscolha uma opção: ").lower() #Armazena a opção do cardápio escolhida pelo cliente.
-            req = f'{cmd_client[0]}/{cmd_MENU[1]}/{escolha}' #Enviando o método CHOOSE e a opção escolhida do cardápio na requisição.
+        if resp[0] == 'SENT_MENU':
+            # Armazena a opção do cardápio escolhida pelo cliente.
+            escolha = input("\nEscolha uma opção: ").lower()
+            # Enviando o método CHOOSE e a opção escolhida do cardápio na requisição.
+            req = f'{cmd_client[0]}/{cmd_MENU[1]}/{escolha}'
             sock.send(str.encode(req))
-        elif resp[0] == 'ADD_ITEM':
-            pedido = resp[1]
-            v_total += float(resp[2])
-            lista.inserir(1, pedido)
-            print("\nCarrinho: ", lista)
-            print(f'Total: {v_total}')
-            print("\nDeseja continuar comprando? (S/N)")
-            confirmacao = input('Opção: ').lower()    
-            if confirmacao == 'n':
-                return lista.__str__()
-            else:
-                carrinho_pedidos(lista)
+            resp = sock.recv(1024)
+            resp = resp.decode()
+            # Dividindo o método do protocolo do conteúdo da mensagem.
+            resp = resp.split('/')
+
+            if resp[0] == 'ADD_ITEM':
+                pedido = resp[1]
+                v_total += float(resp[2])
+                lista.inserir(1, pedido)
+                print("\nCarrinho: ", lista)
+                print(f'Total: {v_total:.2f}')
+                print("\nDeseja continuar comprando? (S/N)")
+                confirmacao = input('Opção: ').lower()
+
+                if confirmacao == 'n':
+                    return
+        else:
+            print("\nOpção inválida. Tente novamente.")
+            input("\nPressione ENTER para continuar...")
+
 
 def carrinho_pedidos(lista):
     limpaTerminal()
@@ -136,14 +149,12 @@ except ConnectionRefusedError as cre:
     sys.exit()
 
 while True:
-    
-    # try:
-        menu = showMenu()
-        if menu == "1":
-            mensagem = Escolhe_pedido(carrinho)  
-                    
-        elif menu == "2":
-            carrinho_pedidos(carrinho)
+    menu = showMenu()
+    if menu == "1":
+        Escolhe_pedido(carrinho)
+
+    elif menu == "2":
+        carrinho_pedidos(carrinho)
 
         elif menu == "3":
             if len(mensagem) != 0:
