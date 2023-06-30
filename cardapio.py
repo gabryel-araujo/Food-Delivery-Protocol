@@ -1,4 +1,4 @@
-cardapio = { "1":["À moda da casa", 38.00],
+cardapio = { "1":["À moda da casa,", 38.00, ','],
     "2":["Calabresa", 38.00],
     "3":["Frango com catupiry", 38.00],
     "4":["Pepperoni", 38.00],

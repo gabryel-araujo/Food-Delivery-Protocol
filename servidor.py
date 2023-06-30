@@ -6,7 +6,7 @@ import threading
 from cardapio import *
 from menu import *
 
-HOST = '127.0.0.1'
+HOST = '0.0.0.0'
 PORTA = 41800
 cmd_server = ['SENT_MENU', 'ADD_ITEM', 'VALOR']
 
