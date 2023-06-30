@@ -9,8 +9,7 @@ carrinho = Lista()
 HOST = '0.0.0.0'
 PORTA = 41800
 mensagem = 0
-cmd_client = ['MENU', 'SEND', 'REMOVE','QUIT'] #MÉTODOS DO PROTOCOLO.  
-cmd_MENU = ['SHOW', 'CHOOSE'] #Dentro do método MENU temos o SHOW e CHOOSE.
+cmd_client = ['GET_MENU', 'SEND', 'REMOVE','QUIT'] #MÉTODOS DO PROTOCOLO.  
 req = ''
 resp = ''
 v_total = 0
@@ -34,7 +33,7 @@ def Escolhe_pedido(lista):
         global v_total
         limpaTerminal()
         # Adicionando o SHOW na requisição.
-        req = f'{cmd_client[0]}/{cmd_MENU[0]}'
+        req = f'{cmd_client[0]}'
         sock.send(str.encode(req))
         resp = sock.recv(1024)
         resp = resp.decode()
