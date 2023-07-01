@@ -15,7 +15,7 @@ class Cliente:
         return self.__telefone
 
     def getCep(self):
-        return self.__cep
+        return self.__pagamento
 
     def getPagamento(self):
         return self.__pagamento

@@ -157,28 +157,3 @@ class Lista:
             cursor = cursor.prox
         s += ' ]'
         return s
-    
-    def insereInicio(self,valor):
-        self.inserir(1, valor)
-     
-    def insereFim(self,valor):
-        self.inserir(self.__tamanho+ 1, valor)
-
-    def esvaziar(self):
-        while not (self.estaVazia()):
-            self.remover(self.__tamanho)
-    
-    def removeInicio(self):
-        print(f'Número removido: {self.elemento(1)}')
-        self.remover(1)
-
-    def removeFinal(self):
-        print(f'Número removido: {self.elemento(self.__tamanho)}')
-        self.remover(self.__tamanho)
-    
-    def removeOcorrencias(self,valor):
-        try:
-            while True:
-                self.remover(self.busca(valor))
-        except ListaException:
-            return 
