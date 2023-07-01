@@ -4,7 +4,7 @@ import threading
 from cardapio import *
 from menu import *
 
-HOST = '127.0.0.1'
+HOST = '0.0.0.0'
 PORTA = 41800
 cmd_server = ['SENT_MENU', 'VALOR', 'QUIT_OK']
 
@@ -38,12 +38,13 @@ def processarCliente(con, cliente):
         mensagem = con.recv(1024)
         msgDecodificada = mensagem.decode()
         msgDecodificada = msgDecodificada.split('/')
+        print(msgDecodificada[0])
         
         if msgDecodificada[0] == 'GET_MENU':
-            cardapio_view = f'{cmd_server[0]}/'
-            for item in cardapio:
-                cardapio_view += f'{item},{cardapio[item]:.2f}\n'
+            cardapio_view = f'{cmd_server[0]}/\n'
             print(cardapio_view)
+            for item in cardapio:
+                cardapio_view += f'{item},{cardapio[item]:.2f}*'
             con.send(str.encode(cardapio_view))
         
         elif msgDecodificada[0] == "SEND":

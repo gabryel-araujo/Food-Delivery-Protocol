@@ -34,15 +34,14 @@ def fazPedido(lista):
     while True:
         limpaTerminal()
         if cardapio == '': #Caso o cliente ainda não tenha recebido o cardápio, realiza a requisição.
-            req = f'{cmd_client[0]}\n' 
+            req = f'{cmd_client[0]}/\n' 
             sock.send(str.encode(req)) #Envia o método na requisição.
             resp = sock.recv(1024)
             resp = resp.decode()
-            resp = resp.split('/') # Separando a mensagem do protocolo do conteúdo.
+            resp = resp.split('/') #Separando a mensagem do protocolo do conteúdo.
             if resp[0] == 'SENT_MENU':
                 cardapio = resp[1] #Adiciona em uma variável apenas a parte contendo o cardápio.
-                cardapio = cardapio.split('\n') #Separa o cardápio pelas linhas.
-                print(cardapio)
+                cardapio = cardapio.split('*') #Separa o cardápio pelas linhas.
         cardapio = cardapio.split(',') #Dessa vez, separa o cardápio por elemento.
         tam = len(cardapio)
         i = 0
