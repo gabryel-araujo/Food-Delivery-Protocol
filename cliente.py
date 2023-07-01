@@ -1,4 +1,5 @@
-import socket, sys
+import socket
+import sys
 import os
 import platform
 from Lista_Encadeada import *
@@ -6,14 +7,14 @@ from menu import *
 from Cliente_Class import Cliente
 
 carrinho = Lista()
-HOST = '0.0.0.0'
+HOST = '127.0.0.1'
 PORTA = 41800
-mensagem = 0
-cmd_client = ['GET_MENU', 'SEND', 'REMOVE','QUIT'] #MÉTODOS DO PROTOCOLO.  
+cmd_client = ['GET_MENU', 'SEND', 'QUIT']  # MÉTODOS DO PROTOCOLO.
 req = ''
 resp = ''
 v_total = 0
-cardapio = ""
+cardapio =''
+
 
 def showMenu():
     limpaTerminal()
@@ -27,46 +28,41 @@ def showMenu():
     return escolha
 
 
-def Escolhe_pedido(lista):
+def fazPedido(lista):
     global v_total
+    global cardapio
     while True:
-        global v_total
         limpaTerminal()
-        # Adicionando o SHOW na requisição.
-        req = f'{cmd_client[0]}'
-        sock.send(str.encode(req))
-        resp = sock.recv(1024)
-        resp = resp.decode()
-        # Dividindo o método do protocolo do conteúdo da mensagem.
-        resp = resp.split('/')
-        print(resp[1])
-
-        if resp[0] == 'SENT_MENU':
-            # Armazena a opção do cardápio escolhida pelo cliente.
-            escolha = input("\nEscolha uma opção: ").lower()
-            # Enviando o método CHOOSE e a opção escolhida do cardápio na requisição.
-            req = f'{cmd_client[0]}/{cmd_MENU[1]}/{escolha}'
-            sock.send(str.encode(req))
+        if cardapio == '': #Caso o cliente ainda não tenha recebido o cardápio, realiza a requisição.
+            req = f'{cmd_client[0]}\n' 
+            sock.send(str.encode(req)) #Envia o método na requisição.
             resp = sock.recv(1024)
             resp = resp.decode()
-            # Dividindo o método do protocolo do conteúdo da mensagem.
-            resp = resp.split('/')
-
-            if resp[0] == 'ADD_ITEM':
-                pedido = resp[1]
-                v_total += float(resp[2])
-                lista.inserir(1, pedido)
-                print("\nCarrinho: ", lista)
-                print(f'Total: {v_total:.2f}')
-                print("\nDeseja continuar comprando? (S/N)")
-                confirmacao = input('Opção: ').lower()
-
-                if confirmacao == 'n':
-                    return
+            resp = resp.split('/') # Separando a mensagem do protocolo do conteúdo.
+            if resp[0] == 'SENT_MENU':
+                cardapio = resp[1] #Adiciona em uma variável apenas a parte contendo o cardápio.
+                cardapio = cardapio.split('\n') #Separa o cardápio pelas linhas.
+                print(cardapio)
+        cardapio = cardapio.split(',') #Dessa vez, separa o cardápio por elemento.
+        tam = len(cardapio)
+        i = 0
+        cardapio_view = '=============== CARDÁPIO ===================\n'
+        while i <= tam:
+            cardapio_view += f'{i+1} - {cardapio[i][0]}: R$ {cardapio[i][1]}'
+            i += 1
+        print(cardapio_view)
+        escolha = input("\nEscolha uma opção: ").lower()
+        pedido = f'{cardapio[escolha-1][0]}'
+        v_total += float(cardapio[escolha-1][0])
+        lista.inserir(1, pedido)
+        print("\nCarrinho: ", lista)
+        print(f'Total: {v_total:.2f}')
+        print("\nDeseja continuar comprando? (S,N)")
+        confirmacao = input('Opção: ').lower()
+        if confirmacao == 'n':
+            return lista.__str__()
         else:
-            print("\nOpção inválida. Tente novamente.")
-            input("\nPressione ENTER para continuar...")
-
+            carrinho_pedidos()
 
 def carrinho_pedidos(lista):
     limpaTerminal()
@@ -77,70 +73,65 @@ def carrinho_pedidos(lista):
     print("\n1 - Remover item")
     print("2 - Adicionar item")
     print("3 - Voltar")
-    
-    escolha = input ("\nEscolha uma opção: ").lower()
+
+    escolha = input("\nEscolha uma opção: ").lower()
     if escolha == '1':
         item = input('Insira o nome do item ou sua posição no carrinho: ').capitalize()
         try:
             if lista.busca(item):
                 lista.remover(lista.busca(item))
-                req = f'{cmd_client[2]}/{item}'
             else:
-                rmv = lista.elemento(int(item))
                 lista.remover(int(item))
-                req = f'{cmd_client[2]}/{rmv}'
-            sock.send(str.encode(req))
-            resp = sock.recv(1024)
-            resp = resp.decode()
-            resp = resp.split('/') #Dividindo o método do protocolo do conteúdo da mensagem.              
-            if resp[0] == 'VALOR':
-                v_total -= float(resp[1])
-                print (lista)
-                carrinho_pedidos(lista)
+            print(lista)
+            carrinho_pedidos(lista)
         except ListaException as le:
             print(le)
             carrinho_pedidos(lista)
     elif escolha == '2':
-        return Escolhe_pedido(lista)   
+        fazPedido(lista)
     else:
         return
-        # except:
-        #     raise ValorInexistenteException (f'0 sabor {item} não está no seu carrinho')
-# TEMP MENU, TEMP CARDAPIO, TEMP CARRINHO
-        
-def Dados_pagamento(): #Função responsável por receber os dados do cliente e retornar uma string desses dados.
+
+
+def dadosPagamento():
     limpaTerminal()
-    global total
-    cliente = Cliente_()
+    global v_total
+    cliente = Cliente()
     print("Para finalizar, preencha os campos abaixo:")
     cliente.setNome(input("Nome: "))
     cliente.setTelefone(input("Telefone: "))
-    print("\nForma de pagamento:")
+    cliente.setCep(input("Cep: "))
+    print("\nVALOR TOTAL:", v_total)
+    print("Forma de pagamento:")
     print("1 - Cartão (pagamento na entrega)\n2 - Dinheiro")
     cliente.setPagamento(input("Opção: "))
-    if cliente.__pagamento == '2':
+    if cliente.getPagamento() == 'Dinheiro':
         print("Vai ser necessário troco?(S/N)")
         troco = input().lower()
         if troco == 's':
-            valor = float(input("Informar o valor do troco: "))   
-            cliente.setTroco(valor) 
-    return cliente.__str__()
+            valor = float(input("Informar o valor do troco: "))
+            cliente.setTroco(valor)
+    return cliente
 
-def limpaTerminal():   
+def esvaziaCarrinho(lista):
+    while not (lista.estaVazia()):
+        lista.remover(lista.tamanho())
+
+
+def limpaTerminal():
     if platform.system() == 'Windows':
         os.system('cls')
     else:
         os.system('clear')
-     
 
-# ----------- INÍCIO PROGRAMA PRINCIPAL -----------------
+# -------------- Início programa principal ------------
 
 if len(sys.argv) > 1:
     HOST = sys.argv[1]
 
 servidor = (HOST, PORTA)
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-#Exceção será lançada informando que a pizzaria está fechada caso o cliente tente se conectar com o servidor fechado
+
 try:
     sock.connect(servidor)
 except ConnectionRefusedError as cre:
@@ -149,44 +140,34 @@ except ConnectionRefusedError as cre:
 
 while True:
     menu = showMenu()
-    if menu == "1":
-        Escolhe_pedido(carrinho)
+    if menu == "1": 
+        fazPedido(carrinho)
 
     elif menu == "2":
         carrinho_pedidos(carrinho)
 
-        elif menu == "3":
-            if len(mensagem) != 0:
-                dados = Dados_pagamento()
-                req = f'{cmd_client[1]}/{mensagem}/{dados}' #Adiciona o método SEND, a lista com o pedido e os dados do cliente na variável que será enviada ao servidor.
-                sock.send(str.encode(req))
-                input('\nPressione ENTER para voltar ao MENU...')
-                mensagem = 0
-                total = 0
-                carrinho.esvaziar()  
-
-            else:
-                limpaTerminal()
-                print("\nSeu carrinho está vazio! Adicione algo para fazer seu pedido!")   
-                input("\nPressione ENTER para ir ao cardápio...")
-                Escolhe_pedido(carrinho) 
-
-        elif menu == 'x':
-            req = cmd_client[2]
+    elif menu == "3":
+        if len(carrinho) != 0:
+            dados = dadosPagamento()
+            req = f'{cmd_client[1]}/{carrinho}/{dados}\n'
             sock.send(str.encode(req))
-            req = sock.recv(1024)
-            print(req)
-            
-            
-            
-            # print("\nAgradecemos por sua preferência. Volte sempre!")
-            break
+            input('\nPressione ENTER para voltar ao MENU...')
+            esvaziaCarrinho(carrinho)
+            v_total = 0
+        else:
+            limpaTerminal()
+            print("\nSeu carrinho está vazio! Adicione algo para fazer seu pedido!")
+            input("\nPressione ENTER para ir ao cardápio...")
+            fazPedido(carrinho)
 
-    # except:
-            print("\n"+"Você saiu!")
-            break  
-    
-    #if not mensagem:
-        #break
+    elif menu == 'x':
+        req = cmd_client[2]
+        sock.send(str.encode(req))
+        req = sock.recv(1024)
+        req = req.decode()
+        req = req.split('/')
+        if req[0] == 'QUIT_OK':
+            print(req.decode())
+            break
 
 sock.close()

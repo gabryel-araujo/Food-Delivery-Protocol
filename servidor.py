@@ -1,14 +1,12 @@
 import socket
-import os
-import sys
 from FilaEncadeada import Fila, FilaException
 import threading
 from cardapio import *
 from menu import *
 
-HOST = '0.0.0.0'
+HOST = '127.0.0.1'
 PORTA = 41800
-cmd_server = ['SENT_MENU', 'ADD_ITEM', 'VALOR']
+cmd_server = ['SENT_MENU', 'VALOR', 'QUIT_OK']
 
 pedidos = Fila()
 dados_cliente = Fila()
@@ -40,19 +38,14 @@ def processarCliente(con, cliente):
         mensagem = con.recv(1024)
         msgDecodificada = mensagem.decode()
         msgDecodificada = msgDecodificada.split('/')
-        if msgDecodificada[0] == 'MENU':
-            if msgDecodificada[1] == 'SHOW':
-                cardapio_view = f'{cmd_server[0]}/===CARDÁPIO===\n'
-                for item in cardapio:
-                    cardapio_view += f'{item} - {cardapio[item][0]}: R$ {cardapio[item][1]:.2f}\n'
-                con.send(str.encode(cardapio_view))
-            if msgDecodificada[1] == 'CHOOSE':
-                if msgDecodificada[2] in cardapio.keys():
-                    # Total é incrementado com o valor do pedido que consta no cardápio.
-                    total = cardapio[msgDecodificada[2]][1]
-                    # Forma uma string com o pedido e valor total atual.
-                    pedido = f'{cmd_server[1]}/{cardapio[msgDecodificada[2]][0]}/{total}'
-                    con.send(str.encode(pedido))  # Envia a string ao cliente.
+        
+        if msgDecodificada[0] == 'GET_MENU':
+            cardapio_view = f'{cmd_server[0]}/'
+            for item in cardapio:
+                cardapio_view += f'{item},{cardapio[item]:.2f}\n'
+            print(cardapio_view)
+            con.send(str.encode(cardapio_view))
+        
         elif msgDecodificada[0] == "SEND":
             pedidos.enfileira(msgDecodificada[1])
             dados_cliente.enfileira(msgDecodificada[2])
@@ -62,13 +55,10 @@ def processarCliente(con, cliente):
             print(f"Pedidos em espera: {pedidos} Total: {len(pedidos)}")
             con.send(str.encode(
                 f'\nRecebemos seu pedido com sucesso!\nPedido:{msgDecodificada[1]}'))
-        elif msgDecodificada[0] == "REMOVE":
-            for item in cardapio.values():
-                if item[0] == msgDecodificada[1]:
-                    total = f'{cmd_server[2]}/{item[1]}'
-            con.send(str.encode(total))
-        elif msgDecodificada == 'quit':
-            con.send(str.encode('\nXau xau! Volte sempre que estiver com fome!'))
+        
+        elif msgDecodificada[0] == 'quit':
+            msg = f'{cmd_server[2]}/Xau xau! Volte sempre que estiver com fome!\n'
+            con.send(str.encode(msg))
 
         if not mensagem:
             break
