@@ -34,62 +34,76 @@ def fazPedido(lista):
     while True:
         limpaTerminal()
         if cardapio == '': #Caso o cliente ainda não tenha recebido o cardápio, realiza a requisição.
-            req = f'{cmd_client[0]}\n' 
+            req = f'{cmd_client[0]}/\n' 
             sock.send(str.encode(req)) #Envia o método na requisição.
             resp = sock.recv(1024)
             resp = resp.decode()
-            resp = resp.split('/') # Separando a mensagem do protocolo do conteúdo.
+            resp = resp.split('\n') #Separando a mensagem do protocolo do conteúdo.
             if resp[0] == 'SENT_MENU':
                 cardapio = resp[1] #Adiciona em uma variável apenas a parte contendo o cardápio.
-                cardapio = cardapio.split('\n') #Separa o cardápio pelas linhas.
-                print(cardapio)
-        cardapio = cardapio.split(',') #Dessa vez, separa o cardápio por elemento.
+                cardapio = cardapio.split('*') #Separa o cardápio pelas linhas.                
+                cardapio = [item.split(',') for item in cardapio] #Dessa vez, separa o cardápio por elemento.
         tam = len(cardapio)
         i = 0
         cardapio_view = '=============== CARDÁPIO ===================\n'
-        while i <= tam:
-            cardapio_view += f'{i+1} - {cardapio[i][0]}: R$ {cardapio[i][1]}'
+        while i < tam:
+            cardapio_view += f'{i+1} - {cardapio[i][0]}: R$ {cardapio[i][1]}\n'
             i += 1
         print(cardapio_view)
-        escolha = input("\nEscolha uma opção: ").lower()
+        escolha = int(input("\nEscolha uma opção: "))
         pedido = f'{cardapio[escolha-1][0]}'
-        v_total += float(cardapio[escolha-1][0])
+        v_total += float(cardapio[escolha-1][1])
         lista.inserir(1, pedido)
         print("\nCarrinho: ", lista)
         print(f'Total: {v_total:.2f}')
-        print("\nDeseja continuar comprando? (S,N)")
+        print("\nDeseja continuar comprando? (S/N)")
         confirmacao = input('Opção: ').lower()
         if confirmacao == 'n':
-            return lista.__str__()
+            showMenu()
         else:
-            carrinho_pedidos()
+            carrinho_pedidos(lista)
 
 def carrinho_pedidos(lista):
     limpaTerminal()
     global v_total
+    global cardapio
     print("===Carrinho===\n")
-    print(lista)
-    print(f'Total: {v_total:.2f}')
-    print("\n1 - Remover item")
-    print("2 - Adicionar item")
-    print("3 - Voltar")
-
+    if lista.estaVazia():
+        print("Seu carrinho está vazio! Adicione algo para fazer seu pedido!")
+        print("\n1 - Adicionar item")
+        print("2 - Voltar")
+    else:
+        print(lista)
+        print(f'Total: {v_total:.2f}')
+        print("\n1 - Remover item")
+        print("2 - Adicionar item")
+        print("3 - Voltar")
+    
     escolha = input("\nEscolha uma opção: ").lower()
-    if escolha == '1':
-        item = input('Insira o nome do item ou sua posição no carrinho: ').capitalize()
+    if escolha == '1' and not lista.estaVazia():
+        item = input('Insira a posição do item no carrinho: ').capitalize()
         try:
-            if lista.busca(item):
-                lista.remover(lista.busca(item))
+            if len(item) < 9:
+                produto = lista.elemento(int(item))   
+                lista.remover(int(item))       
             else:
-                lista.remover(int(item))
+                produto = item
+                lista.remover(lista.busca(item))
             print(lista)
+            i = 0
+            for item in cardapio:
+                if item[0] == produto:
+                    v_total -= float(item[1])
+                    break
+                i += 1
             carrinho_pedidos(lista)
         except ListaException as le:
             print(le)
+            input()
             carrinho_pedidos(lista)
-    elif escolha == '2':
+    elif escolha == '2' or (escolha == '1' and lista.estaVazia()):
         fazPedido(lista)
-    else:
+    elif escolha == '3' or (escolha == '2' and lista.estaVazia()):
         return
 
 

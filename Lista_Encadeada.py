@@ -128,8 +128,8 @@ class Lista:
                 return cont
             cont += 1
             cursor = cursor.prox
-        return False
-        # raise ListaException(f'Chave {chave} não encontrada')        
+
+        raise ListaException(f'Chave {chave} não encontrada')        
 
     def elemento(self, posicao:int)->any:
         try:
