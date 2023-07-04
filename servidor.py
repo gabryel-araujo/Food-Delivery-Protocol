@@ -41,10 +41,10 @@ def processarCliente(con, cliente):
         print(msgDecodificada[0])
         
         if msgDecodificada[0] == 'GET_MENU':
-            cardapio_view = f'{cmd_server[0]}/\n'
-            print(cardapio_view)
+            cardapio_view = f'{cmd_server[0]}\n'
             for item in cardapio:
                 cardapio_view += f'{item},{cardapio[item]:.2f}*'
+            cardapio_view = cardapio_view[slice(-1)]
             con.send(str.encode(cardapio_view))
         
         elif msgDecodificada[0] == "SEND":
