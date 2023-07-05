@@ -152,8 +152,10 @@ class Lista:
         # código base para percorrer qualquer estrutura linear
         cursor = self.__head
         while( cursor != None ):
+        
             s += f'{cursor.carga}, '
             # incremento do cursor
             cursor = cursor.prox
+        s = s[slice(-2)]
         s += ' ]'
         return s

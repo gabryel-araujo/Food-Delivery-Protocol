@@ -10,8 +10,6 @@ def menuServidor():
     print("===Área da Pizzaria===")
     print('1 - Abrir pizzaria')
     print("2 - Exibir pedidos")
-    print("3 - Abrir chat")
-    print("4 - Editar cardápio")
     escolha = input('Selecione uma opção: ')
 
     if escolha == '1':
@@ -19,9 +17,3 @@ def menuServidor():
     
     if escolha == '2':
         return '2'
-
-    if escolha == '3':
-        return '3'
-    
-    if escolha == '4':
-        return '4'

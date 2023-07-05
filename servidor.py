@@ -18,7 +18,7 @@ escolha = menuServidor()
 if escolha == '1':
     pass
 elif escolha == '2':
-    pass
+    print(clientList)
 elif escolha == '3':
     pass
 elif escolha == '4':
@@ -32,6 +32,7 @@ elif escolha == '4':
 
 
 def processarCliente(con, cliente):
+    # area critica (verificar se o cliente já foi adicionado)
     clientList.append(cliente)
     global total
     while True:
@@ -39,14 +40,14 @@ def processarCliente(con, cliente):
         msgDecodificada = mensagem.decode()
         msgDecodificada = msgDecodificada.split('/')
         print(msgDecodificada[0])
-        
+
         if msgDecodificada[0] == 'GET_MENU':
             cardapio_view = f'{cmd_server[0]}\n'
             for item in cardapio:
                 cardapio_view += f'{item},{cardapio[item]:.2f}*'
             cardapio_view = cardapio_view[slice(-1)]
             con.send(str.encode(cardapio_view))
-        
+
         elif msgDecodificada[0] == "SEND":
             pedidos.enfileira(msgDecodificada[1])
             dados_cliente.enfileira(msgDecodificada[2])
@@ -56,7 +57,7 @@ def processarCliente(con, cliente):
             print(f"Pedidos em espera: {pedidos} Total: {len(pedidos)}")
             con.send(str.encode(
                 f'\nRecebemos seu pedido com sucesso!\nPedido:{msgDecodificada[1]}'))
-        
+
         elif msgDecodificada[0] == 'quit':
             msg = f'{cmd_server[2]}/Xau xau! Volte sempre que estiver com fome!\n'
             con.send(str.encode(msg))
@@ -81,11 +82,7 @@ while True:
         break
     t = threading.Thread(target=processarCliente, args=(con, cliente,))
     t.start()
-    # pid = os.fork()
-    # if pid == 0:
-    #     sock.close()
-    #     processarCliente(con,cliente)
-    #     sys.exit(0)
+
 con.close()
 sock.close()
 
