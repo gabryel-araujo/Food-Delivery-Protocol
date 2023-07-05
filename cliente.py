@@ -4,7 +4,7 @@ import os
 import platform
 from Lista_Encadeada import *
 from menu import *
-from Cliente_Class import Cliente
+from Cliente_Class import *
 
 carrinho = Lista()
 HOST = '127.0.0.1'
@@ -31,6 +31,7 @@ def showMenu():
 def fazPedido(lista):
     global v_total
     global cardapio
+    global menu
     while True:
         limpaTerminal()
         if cardapio == '': #Caso o cliente ainda não tenha recebido o cardápio, realiza a requisição.
@@ -59,7 +60,8 @@ def fazPedido(lista):
         print("\nDeseja continuar comprando? (S/N)")
         confirmacao = input('Opção: ').lower()
         if confirmacao == 'n':
-            showMenu()
+            menu = showMenu()
+            return
         else:
             carrinho_pedidos(lista)
 
@@ -123,8 +125,14 @@ def dadosPagamento():
         print("Vai ser necessário troco?(S/N)")
         troco = input().lower()
         if troco == 's':
-            valor = float(input("Informar o valor do troco: "))
+            valor = float(input("Troco para quanto? "))
+            while valor < v_total:
+                print(f'O valor informado tem que ser maior que {v_total}')
+                valor = float(input("Troco para quanto? "))
             cliente.setTroco(valor)
+
+                    
+                
     return cliente
 
 def esvaziaCarrinho(lista):
@@ -152,8 +160,8 @@ except ConnectionRefusedError as cre:
     print("A pizzaria se encontra fechada")
     sys.exit()
 
+menu = showMenu()
 while True:
-    menu = showMenu()
     if menu == "1": 
         fazPedido(carrinho)
 
@@ -161,7 +169,7 @@ while True:
         carrinho_pedidos(carrinho)
 
     elif menu == "3":
-        if len(carrinho) != 0:
+        if not carrinho.estaVazia():
             dados = dadosPagamento()
             req = f'{cmd_client[1]}/{carrinho}/{dados}\n'
             sock.send(str.encode(req))

@@ -1,4 +1,9 @@
-#Criação da classe cliente para cadastro de dados
+# Criação da classe cliente para cadastro de dados
+
+class ClienteException(Exception):
+    def __init__(self, msg):
+        super().__init__(msg)
+
 
 class Cliente:
     def __init__(self):
@@ -10,7 +15,7 @@ class Cliente:
 
     def getNome(self):
         return self.__nome
-    
+
     def getTelefone(self):
         return self.__telefone
 
@@ -19,10 +24,10 @@ class Cliente:
 
     def getPagamento(self):
         return self.__pagamento
-    
+
     def getTroco(self):
-        return self.__troco    
-    
+        return self.__troco
+
     def setNome(self, novoNome):
         self.__nome = novoNome
 
