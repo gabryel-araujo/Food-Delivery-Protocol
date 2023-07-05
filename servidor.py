@@ -58,7 +58,7 @@ def processarCliente(con, cliente):
             con.send(str.encode(
                 f'\nRecebemos seu pedido com sucesso!\nPedido:{msgDecodificada[1]}'))
 
-        elif msgDecodificada[0] == 'quit':
+        elif msgDecodificada[0] == 'QUIT':
             msg = f'{cmd_server[2]}/Xau xau! Volte sempre que estiver com fome!\n'
             con.send(str.encode(msg))
 

@@ -16,7 +16,7 @@ v_total = 0
 cardapio =''
 
 
-def showMenu():
+def options():
     limpaTerminal()
     escolha = ''
     print("===Menu===")
@@ -60,15 +60,18 @@ def fazPedido(lista):
         print("\nDeseja continuar comprando? (S/N)")
         confirmacao = input('Opção: ').lower()
         if confirmacao == 'n':
-            menu = showMenu()
-            return
+            menu = options()
+            return menu
+            
         else:
-            carrinho_pedidos(lista)
-
+            menu = '2'
+            return menu
+            
 def carrinho_pedidos(lista):
     limpaTerminal()
     global v_total
     global cardapio
+    global menu
     print("===Carrinho===\n")
     if lista.estaVazia():
         print("Seu carrinho está vazio! Adicione algo para fazer seu pedido!")
@@ -103,10 +106,12 @@ def carrinho_pedidos(lista):
             print(le)
             input()
             carrinho_pedidos(lista)
-    elif escolha == '2' or (escolha == '1' and lista.estaVazia()):
-        fazPedido(lista)
-    elif escolha == '3' or (escolha == '2' and lista.estaVazia()):
-        return
+    elif (escolha == '2' and not lista.estaVazia()) or (escolha == '1' and lista.estaVazia()):
+        menu = '1'
+        return menu
+    elif (escolha == '3' and not lista.estaVazia()) or (escolha == '2' and lista.estaVazia()):
+        menu = options()
+        return menu
 
 
 def dadosPagamento():
@@ -129,10 +134,7 @@ def dadosPagamento():
             while valor < v_total:
                 print(f'O valor informado tem que ser maior que {v_total}')
                 valor = float(input("Troco para quanto? "))
-            cliente.setTroco(valor)
-
-                    
-                
+            cliente.setTroco(valor)             
     return cliente
 
 def esvaziaCarrinho(lista):
@@ -160,7 +162,7 @@ except ConnectionRefusedError as cre:
     print("A pizzaria se encontra fechada")
     sys.exit()
 
-menu = showMenu()
+menu = options()
 while True:
     if menu == "1": 
         fazPedido(carrinho)
@@ -189,7 +191,7 @@ while True:
         req = req.decode()
         req = req.split('/')
         if req[0] == 'QUIT_OK':
-            print(req.decode())
+            print(req[1])
             break
-
+            
 sock.close()
