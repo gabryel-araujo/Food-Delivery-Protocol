@@ -11,8 +11,9 @@ PORTA = 41800
 cmd_server = ['SENT_MENU', 'SEND_OK', 'QUIT_OK']
 
 pedidos = Fila()
-clientList = []
 total = 0
+lock = threading.Lock()
+
 
 def menuPizzaria():
     limpaTerminal()
@@ -41,10 +42,14 @@ def processarCliente(con, cliente):
             con.send(str.encode(cardapio_view))
 
         elif msgDecodificada[0] == "SEND":
-            pedidos.enfileira(msgDecodificada[1])
-            pedidos.enfileira(msgDecodificada[2])
+            lock.acquire()
+            try:
+                pedidos.enfileira(msgDecodificada[1])
+            finally:
+                # Libera o bloqueio após a inserção na fila
+                lock.release()
             msg = f'{cmd_server[1]}/\n'
-            con.send(str.encode(f'Recebemos seu pedido com sucesso!\nPedido:{msgDecodificada[1]}'))
+            msg += f'Recebemos seu pedido com sucesso!\n{msgDecodificada[1]}'
             con.send(str.encode(msg))
 
         elif msgDecodificada[0] == 'QUIT':
@@ -61,13 +66,9 @@ def limpaTerminal():
     else:
         os.system('clear')
 
-def formatPedidos(pedido):
-    pedido_view = pedido.__str__()
-    pedido_view = slice
-    pedido_view = pedido_view.split(',')
-    print(pedido_view)
-    return
 
+
+   
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 servidor = (HOST, PORTA)
 sock.bind(servidor)
@@ -90,9 +91,18 @@ if escolha == '1':
                 print("A fila de pedidos está vazia!")
                 input()
             else:
-                print(pedidos)
-                formatPedidos(pedidos)
-                input()
+                lock.acquire()
+                try:
+                    print(pedidos)
+                    view = ''
+                    tam = pedidos.__len__()
+                    i = 0
+                    while i < tam:
+                        view += f'{1} - {pedidos}'
+                        print(view)
+                finally:       
+                        input()
+                    
 
         escolha = menuPizzaria()
 

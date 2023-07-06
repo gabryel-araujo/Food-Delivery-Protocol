@@ -193,8 +193,13 @@ while True:
     elif menu == "3":
         if not carrinho.estaVazia():
             dados = dadosPagamento()
-            req = f'{cmd_client[1]}/{carrinho}/{dados}\n'
+            req = f'{cmd_client[1]}/{dados} Pedido:{carrinho}\n'
             sock.send(str.encode(req))
+            resp = sock.recv(1024)
+            resp = resp.decode()
+            resp = resp.split('/') 
+            if resp[0] == 'SEND_OK':
+                print(resp[1])
             input('\nPressione ENTER para voltar ao MENU...')
             esvaziaCarrinho(carrinho)
             menu = options()

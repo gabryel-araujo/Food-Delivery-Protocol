@@ -73,6 +73,7 @@ class Fila:
 
     def __len__(self)->int:
         return self.__head.tam
+    
 
     def enfileira(self, carga:any):
         novoNo = No(carga)
@@ -97,12 +98,12 @@ class Fila:
 
 
     def __str__(self)->str:
-        s = 'Prioridade->[ '
+        s = 'Início-> '
         cursor = self.__head.frente
         while(cursor != None):
             s += f'{cursor.carga}, ' 
             cursor = cursor.prox
-        return s[:-2] + ' ]'
+        return s[:-2]
 
     def elemento(self, posicao:int)->any:
         if posicao <= 0 or posicao > self.__len__():
