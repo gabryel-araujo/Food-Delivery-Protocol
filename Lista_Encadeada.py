@@ -144,12 +144,19 @@ class Lista:
             
             return cursor.carga
         except AssertionError:
-            raise ListaException('Posicao invalida.')        
+            raise ListaException('Posicao invalida.')  
+        
+
+    def __iter__(self):
+        atual = self.__head
+        while atual is not None:
+            yield atual.carga
+            atual = atual.prox     
 
 
     def __str__(self):
-        s = '[ '
         # código base para percorrer qualquer estrutura linear
+        s = ''
         cursor = self.__head
         while( cursor != None ):
         
@@ -157,5 +164,5 @@ class Lista:
             # incremento do cursor
             cursor = cursor.prox
         s = s[slice(-2)]
-        s += ' ]'
+        
         return s
