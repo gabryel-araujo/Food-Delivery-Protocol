@@ -4,7 +4,7 @@ import platform
 from FilaEncadeada import Fila, FilaException
 import threading
 from cardapio import *
-from menu import *
+
 
 HOST = '0.0.0.0'
 PORTA = 41800
@@ -61,8 +61,12 @@ def limpaTerminal():
     else:
         os.system('clear')
 
-def formatPedidos(pedidos):
-    pass
+def formatPedidos(pedido):
+    pedido_view = pedido.__str__()
+    pedido_view = slice
+    pedido_view = pedido_view.split(',')
+    print(pedido_view)
+    return
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 servidor = (HOST, PORTA)
@@ -75,7 +79,7 @@ if escolha == '1':
     con, cliente = sock.accept()
     t = threading.Thread(target=processarCliente, args=(con, cliente,))
     t.start()
-
+    escolha = 0
     while escolha != '3':
         if escolha == '1':
             print('\nA pizzaria já está aberta!')
@@ -84,6 +88,11 @@ if escolha == '1':
         elif escolha == '2':
             if(pedidos.estaVazia()):
                 print("A fila de pedidos está vazia!")
+                input()
+            else:
+                print(pedidos)
+                formatPedidos(pedidos)
+                input()
 
         escolha = menuPizzaria()
 

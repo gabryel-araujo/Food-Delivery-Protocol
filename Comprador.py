@@ -3,7 +3,6 @@ import sys
 import os
 import platform
 from Lista_Encadeada import *
-from menu import *
 from Cliente import *
 
 carrinho = Lista()
@@ -198,7 +197,10 @@ while True:
             sock.send(str.encode(req))
             input('\nPressione ENTER para voltar ao MENU...')
             esvaziaCarrinho(carrinho)
+            menu = options()
             v_total = 0
+            break
+            
         else:
             limpaTerminal()
             print("\nSeu carrinho está vazio! Adicione algo para fazer seu pedido!")
